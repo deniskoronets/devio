@@ -1,0 +1,22 @@
+title: devio
+description: Your project's dev and deploy script, in PHP
+remote_theme: just-the-docs/just-the-docs@v0.12.0
+plugins:
+  - jekyll-remote-theme
+
+aux_links:
+  GitHub: https://github.com/deniskoronets/devio
+aux_links_new_tab: true
+heading_anchors: true
+back_to_top: true
+optional_front_matter:
+  remove_originals: true
+
+# index.md is README.md, copied in by .github/workflows/docs.yml
+defaults:
+  - scope: { path: index.md }
+    values: { title: Home, nav_order: 1 }
+  - scope: { path: recipes.md }
+    values: { nav_order: 2 }
+  - scope: { path: api.md }
+    values: { nav_order: 3 }

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Fake docker for tests: logs its argv (and env TAG, DOCKER_DEFAULT_PLATFORM if set), answers a few read commands.
+# With FAKE_DOCKER_STATE set it keeps the images in that file (.remote for commands that came through
+# the fake ssh): build adds, rmi removes, save | load carries the names, inspect and images read it.
+# `compose config` prints $FAKE_COMPOSE_CONFIG with ${TAG} filled in; `compose build` builds its tagged images.
+printf '%s%s%s\n' "${DOCKER_DEFAULT_PLATFORM:+DOCKER_DEFAULT_PLATFORM=$DOCKER_DEFAULT_PLATFORM }" "${TAG:+TAG=$TAG }" "$*" >> "$FAKE_DOCKER_LOG"
+
+if [[ "$1" == compose && " $* " == *" config "* ]]; then
+    sed "s/\${TAG}/$TAG/g" "$FAKE_COMPOSE_CONFIG"
+    exit
+fi
+
+if [[ -z "$FAKE_DOCKER_STATE" ]]; then
+    case "$1 $2" in
+        "images --format") printf 'app:one\napp:two\napp:<none>\n' ;;
+        "image inspect") [[ "$*" != *missing* ]] ;;
+    esac
+    exit
+fi
+
+state="$FAKE_DOCKER_STATE${FAKE_REMOTE:+.remote}"
+touch "$state"
+case "$1" in
+    build) printf '%s\n' "$3" >> "$state" ;;
+    compose) [[ " $* " != *" build "* ]] || sed -n "s/.*\"image\": *\"\([^\"]*:\)\${TAG}\".*/\1$TAG/p" "$FAKE_COMPOSE_CONFIG" >> "$state" ;;
+    save) shift; printf '%s\n' "$@" ;;
+    load) gunzip >> "$state" ;;
+    rmi) grep -vxF "$2" "$state" > "$state.tmp"; mv "$state.tmp" "$state" ;;
+    images) grep "^${!#}:" "$state" || true ;;
+    image) shift 2; for image in "$@"; do grep -qxF "$image" "$state" || exit 1; done ;;
+    version) echo linux/arm64 ;;
+esac
