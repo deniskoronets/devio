@@ -17,7 +17,7 @@ use Throwable;
  */
 final class Devio
 {
-    public const VERSION = '0.1.0';
+    public const VERSION = '1.0.0';
 
     /** @var array<string, Command> */
     private static array $commands = [];
