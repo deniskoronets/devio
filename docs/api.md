@@ -33,6 +33,12 @@ command untouched (`./dev art migrate -v` gives artisan the `-v`).
 | `-h`, `--help` | the command list (also with no command) |
 | `--version` | |
 
+Built in when devio runs from the phar:
+
+| command | |
+|---|---|
+| `devio-update-phar` | Replaces your `devio.phar` with the latest one on GitHub (`dist/devio.phar` on `main`), keeping its file mode. Says so if it's up to date already. A command of your own with this name takes its place. With Composer, update with `composer update dekor/devio` instead. |
+
 How a command ends:
 
 | | log | exit code | `onFailure` |
