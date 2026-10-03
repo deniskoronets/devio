@@ -1,7 +1,9 @@
 # devio
 
 A library for writing your project's dev and deploy script in PHP: `./dev up`, `./dev art migrate`, `./dev deploy`.
-It's made for Docker-based PHP projects and reads like Laravel:
+It's made for Docker-based PHP projects and reads like Laravel.
+
+**Docs: [deniskoronets.github.io/devio](https://deniskoronets.github.io/devio/)**
 
 ```php
 #!/usr/bin/env php
@@ -64,8 +66,15 @@ Already up to date.
 
 ## Install
 
-Either download `devio.phar` from the [releases](https://github.com/deniskoronets/devio/releases) next to your script and
-`require __DIR__ . '/devio.phar';`, or use Composer:
+Either download `devio.phar` next to your script:
+
+```bash
+wget https://github.com/deniskoronets/devio/raw/main/dist/devio.phar
+```
+
+Later, `./dev devio-update-phar` replaces it with the latest one.
+
+and `require __DIR__ . '/devio.phar';`, or use Composer:
 
 ```bash
 composer require --dev dekor/devio
@@ -77,6 +86,8 @@ The phar works before `composer install` has run, and on machines without Compos
 
 ## Docs
 
+Online at [deniskoronets.github.io/devio](https://deniskoronets.github.io/devio/):
+
 - [API reference](docs/api.md)
 - [Recipes](docs/recipes.md): dev stack shortcuts, deploying Docker images without a registry, rollback,
   Telegram/Slack alerts, secrets, confirmations
@@ -84,10 +95,25 @@ The phar works before `composer install` has run, and on machines without Compos
 ## Development
 
 ```bash
-composer install
-composer test     # phpunit; ssh, scp and docker are faked by tests/bin
-composer build    # dist/devio.phar
+composer install   # also turns on the git hooks in .githooks
+composer test      # phpunit; ssh, scp and docker are faked by tests/bin
+composer build     # dist/devio.phar
 ```
+
+`dist/devio.phar` is committed, so it can be downloaded straight from `main`. The pre-commit hook rebuilds it from
+the staged files whenever a commit touches `src/`, `build/` or `LICENSE`, and adds it to the commit. CI fails if the
+committed phar doesn't match the sources.
+
+## Our sponsors
+
+<a href="https://mobicard.com.ua/" title="Mobicard"><img src="https://mobicard.com.ua/favicon.svg" width="32" alt="Mobicard"></a>
+<a href="https://busyb.com.ua/" title="BusyB"><img src="https://busyb.com.ua/favicon.svg" width="32" alt="BusyB"></a>
+<a href="https://pc-info.com.ua/" title="PC-Info"><img src="https://pc-info.com.ua/favicon.svg" width="32" alt="PC-Info"></a>
+<a href="https://linktrust.pro/" title="LinkTrust"><img src="https://linktrust.pro/linktrust.svg" width="32" alt="LinkTrust"></a>
+
+## Author
+
+Created and maintained by **[Denys Koronets](https://github.com/deniskoronets/)**.
 
 ## License
 

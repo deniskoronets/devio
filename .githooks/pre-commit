@@ -1,0 +1,14 @@
+#!/bin/sh
+# Rebuilds dist/devio.phar from the staged files and adds it to the commit, when they touch what goes in it.
+# Installed by `composer install` (git config core.hooksPath .githooks).
+
+git diff --cached --quiet -- src build LICENSE && exit 0
+
+command -v php >/dev/null || { echo "pre-commit: php is needed to rebuild dist/devio.phar" >&2; exit 1; }
+
+staged=$(mktemp -d)
+trap 'rm -rf "$staged"' EXIT
+git checkout-index --all --prefix="$staged/"
+
+php -d phar.readonly=0 build/phar.php "$staged" || exit 1
+git add dist/devio.phar

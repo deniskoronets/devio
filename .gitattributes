@@ -4,3 +4,7 @@
 /build export-ignore
 /tests export-ignore
 /phpunit.xml export-ignore
+/dist export-ignore
+
+# the committed phar: no diffs, no line-ending changes
+*.phar binary

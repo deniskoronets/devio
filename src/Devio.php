@@ -3,6 +3,8 @@
 namespace Dekor\Devio;
 
 use Closure;
+use Dekor\Devio\Support\PharUpdate;
+use Phar;
 use Throwable;
 
 /**
@@ -57,6 +59,11 @@ final class Devio
     {
         $script = basename((string) (array_shift($argv) ?? 'devio'));
         Console::verbose((bool) getenv('DEVIO_VERBOSE'));
+
+        // from the phar only: a Composer install updates with Composer
+        if (class_exists(Phar::class) && ($phar = Phar::running(false)) !== '' && ! isset(self::$commands['devio-update-phar'])) {
+            self::command('devio-update-phar', fn () => PharUpdate::run($phar), 'update devio.phar to the latest on GitHub');
+        }
 
         while ($argv && str_starts_with($argv[0], '-')) {
             $option = array_shift($argv);

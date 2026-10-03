@@ -29,7 +29,9 @@
     },
     "scripts": {
         "test": "phpunit",
-        "build": "@php -d phar.readonly=0 build/phar.php"
+        "build": "@php -d phar.readonly=0 build/phar.php",
+        "post-install-cmd": "git config core.hooksPath .githooks || true",
+        "post-update-cmd": "git config core.hooksPath .githooks || true"
     },
     "scripts-descriptions": {
         "test": "Run the test suite",
